@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Email #1 | RE for Beginners</title>
+<link href="site.css" rel="stylesheet"/>
+</head>
+<body><aside class="sidebar">
+<div class="sidebar-brand">
+<a href="index.html">RE for Beginners</a>
+</div>
+<nav>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="the-workshop.html">The Workshop</a>
+<ul class="workshop-children">
+<li class="nav-section-label">Preparation</li>
+<li><a class="active" href="assignment-1.html">Prep #1 — Welcome!</a></li>
+<li><a href="assignment-2.html">Prep #2 — The Call Stack &amp; OllyDbg</a></li>
+<li><a href="assignment-3.html">Prep #3 — Last Prep</a></li>
+<li class="nav-section-label">Sessions</li>
+<li><a href="x86-overview.html">#1 — x86 Overview</a></li>
+<li><a href="short-intro-to-ida.html">#2 — Short Intro to IDA</a></li>
+<li><a href="playground-exercises.html">#3 — Playground Exercises</a></li>
+<li><a href="julia.html">#4 — Julia</a></li>
+<li><a href="hacking-minesweeper.html">#5 — Hacking Minesweeper</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+<footer class="site-footer">
+<a aria-label="Website" href="https://ophirharpaz.com" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.22.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+</a>
+<a aria-label="Twitter" href="https://twitter.com/OphirHarpaz" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+</a>
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/ophir-harpaz-7624b9105" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+</a>
+<a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
+</a>
+</footer>
+<div class="page-content">
+<main class="email-card">
+<h2>[Reverse Engineering Workshop] Prep #1 - Welcome!</h2>
+<p>Dear participants!</p>
+<p>I am very excited to have you in the Reverse Engineering workshop.</p>
+<p>First, please pat yourself on the back for doing it - this is going to be an adventure, not an easy one but definitely a fun one!</p>
+<p>In order to make sure that we have a common ground for the workshop, you will be asked to go through 3 preparation assignments (this one is the first).</p>
+<p>Please make sure you free some time to do them - this will make the workshop much more valuable and beneficial for you. </p>
+<p>We will start with two topics:</p>
+<ol>
+<li>
+<p>What is exactly Reverse Engineering?</p>
+</li>
+<li>
+<p>Basic ASM x86</p>
+</li>
+</ol>
+<p>Time estimation: 1.5-2.5 hours.</p>
+<p>So what is exactly Reverse Engineering?</p>
+<figure><img alt="" src="images/c52569_7a4a3109c35640cb9cb12c893554e34b~mv2_5e6d6faf.png"/></figure>
+<p>(thanks Google.)</p>
+<p>In our case, reverse engineering is the reproduction of another person’s <b>source code</b> following detailed examination of the <b>executable machine code</b>. Namely, we figure out what a program does by examining the instructions the program asks the CPU to run.</p>
+<p><br/>
+Here’s some more information on Reverse Engineering in general and Software RE in particular (taken from Reversing: Secrets of Reverse Engineering by Eldad Eilam):</p>
+<figure><img alt="" src="images/c52569_bc63f1d634a14716942dbf3c2eed7446~mv2_4a337ce8.png"/></figure>
+<p>I would be happy to give you an introduction on Assembly language, it’s just that some people have already done it pretty well… So once again, an excerpt from Secrets of Reversing:</p>
+<figure><img alt="" src="images/c52569_545878042362476aa69c34bf5ef2b37f~mv2_d03678dc.png"/></figure>
+<p>I hope you now understand the importance of knowing Assembly (and more particularly, the x86 assembly dialect) for the process of reverse engineering.</p>
+<p>So we know what reverse engineering means and we know that it’s based on the knowledge of Assembly language. It is time to dive a little deeper into x86 Assembly. For this purpose, read through the following <a href="https://web.archive.org/web/20200402220801/https://www.cs.virginia.edu/~evans/cs216/guides/x86.html" target="_blank">x86 tutorial</a>. Stop at “Calling Conventions” .</p>
+<p>Once again, if something is not clear, consider using Google, Wikipedia or your favorite LLM :) Don’t get too scared if some terminology is unknown yet.</p>
+<p>This is where our first prep finishes. It’s time for some exercise, don’t you think?</p>
+<hr class="section-divider"/>
+<h3>Quick Check</h3>
+<div class="exercise">
+<p>1. What is <code>foo</code> in the following example? How much space does it occupy in memory?</p>
+<pre><code>.data
+   foo DW 1,1,2,3,5</code></pre>
+<details class="answer">
+<summary>Show answer</summary>
+<p>foo is an array of five 16-bit numbers. Its size is 2 bytes * 5 = 10 bytes.</p>
+</details>
+</div>
+<div class="exercise">
+<p>2. What is the value stored in EAX by the end of this code?</p>
+<pre><code>mov eax,0x2
+mov ebx,eax
+shl eax,0x2
+add eax,ebx
+and eax,0x8</code></pre>
+<details class="answer">
+<summary>Show answer</summary>
+<p>EAX stores the value 0x8.</p>
+</details>
+</div>
+<div class="exercise">
+<p>3. <b>Bonus:</b> what should be the value of EAX at the beginning of the following code, such that by the end of it, EAX = 0?</p>
+<pre><code>xor eax, eax</code></pre>
+<details class="answer">
+<summary>Show answer</summary>
+<p>A value XORed with itself will always return 0, so EAX can be any value.</p>
+</details>
+</div>
+<p>Good luck y'all!</p>
+<p><a class="btn btn-primary" href="assignment-2.html">To prep #2!</a></p>
+</main>
+</div></body>
+</html>

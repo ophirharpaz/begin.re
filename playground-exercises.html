@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Playground Exercises | RE for Beginners</title>
+<link href="site.css" rel="stylesheet"/>
+</head>
+<body><aside class="sidebar">
+<div class="sidebar-brand">
+<a href="index.html">RE for Beginners</a>
+</div>
+<nav>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="the-workshop.html">The Workshop</a>
+<ul class="workshop-children">
+<li class="nav-section-label">Preparation</li>
+<li><a href="assignment-1.html">Prep #1 — Welcome!</a></li>
+<li><a href="assignment-2.html">Prep #2 — The Call Stack &amp; OllyDbg</a></li>
+<li><a href="assignment-3.html">Prep #3 — Last Prep</a></li>
+<li class="nav-section-label">Sessions</li>
+<li><a href="x86-overview.html">#1 — x86 Overview</a></li>
+<li><a href="short-intro-to-ida.html">#2 — Short Intro to IDA</a></li>
+<li><a class="active" href="playground-exercises.html">#3 — Playground Exercises</a></li>
+<li><a href="julia.html">#4 — Julia</a></li>
+<li><a href="hacking-minesweeper.html">#5 — Hacking Minesweeper</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+<footer class="site-footer">
+<a aria-label="Website" href="https://ophirharpaz.com" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.22.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+</a>
+<a aria-label="Twitter" href="https://twitter.com/OphirHarpaz" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+</a>
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/ophir-harpaz-7624b9105" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+</a>
+<a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
+</a>
+</footer>
+<div class="page-content">
+<main>
+<h2>Session #3 - Playground Exercises</h2>
+<p>The Playground session consists of 2 exercises. Download each one (password is CLEAN), then use IDA to understand what the program does and what input it expects.</p>
+<ul>
+<li><a href="https://drive.google.com/file/d/1yl51UOkIsmm7m9xczLD9HEyUJV4E1WRy/view?usp=drive_link" target="_blank">Password</a></li>
+<li><a href="https://drive.google.com/file/d/1lO0cdh5hWOAmXMkWD50mqlVkRJh7bnK6/view?usp=drive_link" target="_blank">GoodLuck</a></li>
+</ul>
+<hr class="section-divider"/>
+<h3>Quick Check</h3>
+<div class="exercise">
+<p>1. What is the correct input for "Password"?</p>
+<div class="quiz-input">
+<input id="pw-answer" placeholder="Enter the input" type="text"/>
+<button onclick="checkPw()">Check</button>
+<span class="quiz-feedback" id="pw-feedback"></span>
+</div>
+</div>
+<div class="exercise">
+<p>2. What is the correct input for "GoodLuck"?</p>
+<div class="quiz-input">
+<input id="gl-answer" placeholder="Enter the input" type="text"/>
+<button onclick="checkGl()">Check</button>
+<span class="quiz-feedback" id="gl-feedback"></span>
+</div>
+</div>
+<p><a class="btn btn-primary" href="julia.html">Next session</a></p>
+<script>
+function checkPw() {
+  var val = document.getElementById('pw-answer').value;
+  var fb = document.getElementById('pw-feedback');
+  if (val === atob('Y3I0Y2ttMw==')) {
+    fb.textContent = '✓ Correct!';
+    fb.style.color = '#4ade80';
+  } else {
+    fb.textContent = '✗ Not quite.';
+    fb.style.color = '#f87171';
+  }
+}
+function checkGl() {
+  var val = document.getElementById('gl-answer').value;
+  var fb = document.getElementById('gl-feedback');
+  if (val === atob('MTIzNA==')) {
+    fb.textContent = '✓ Correct!';
+    fb.style.color = '#4ade80';
+  } else {
+    fb.textContent = '✗ Not quite.';
+    fb.style.color = '#f87171';
+  }
+}
+document.getElementById('pw-answer').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPw(); });
+document.getElementById('gl-answer').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkGl(); });
+</script>
+</main>
+</div></body>
+</html>

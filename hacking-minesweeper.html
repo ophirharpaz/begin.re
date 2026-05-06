@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Hacking Minesweeper | RE for Beginners</title>
+<link href="site.css" rel="stylesheet"/>
+</head>
+<body><aside class="sidebar">
+<div class="sidebar-brand">
+<a href="index.html">RE for Beginners</a>
+</div>
+<nav>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="the-workshop.html">The Workshop</a>
+<ul class="workshop-children">
+<li class="nav-section-label">Preparation</li>
+<li><a href="assignment-1.html">Prep #1 — Welcome!</a></li>
+<li><a href="assignment-2.html">Prep #2 — The Call Stack &amp; OllyDbg</a></li>
+<li><a href="assignment-3.html">Prep #3 — Last Prep</a></li>
+<li class="nav-section-label">Sessions</li>
+<li><a href="x86-overview.html">#1 — x86 Overview</a></li>
+<li><a href="short-intro-to-ida.html">#2 — Short Intro to IDA</a></li>
+<li><a href="playground-exercises.html">#3 — Playground Exercises</a></li>
+<li><a href="julia.html">#4 — Julia</a></li>
+<li><a class="active" href="hacking-minesweeper.html">#5 — Hacking Minesweeper</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</aside>
+<footer class="site-footer">
+<a aria-label="Website" href="https://ophirharpaz.com" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.22.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+</a>
+<a aria-label="Twitter" href="https://twitter.com/OphirHarpaz" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+</a>
+<a aria-label="LinkedIn" href="https://www.linkedin.com/in/ophir-harpaz-7624b9105" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+</a>
+<a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
+</a>
+</footer>
+<div class="page-content">
+<main>
+<h2>Session #5 - Hacking Minesweeper</h2>
+<p>The last part is a guided session to hacking Microsoft's famous Minesweeper game. You are welcome to check my <a href="https://medium.com/@ophirharpaz/put-the-flags-out-hacking-minesweeper-befff233edc1" target="_blank">blog-post</a> where I told the story of solving this challenge. Also, you can download the patched version <a href="https://github.com/ophirharpaz/Patched-Minesweeper" target="_blank">here</a>.</p>
+<p>I would like to give all the credit for this exercise to <a href="https://www.linkedin.com/in/aviad-carmel-2a2b6394/" target="_blank">Aviad Carmel</a> and thank him a lot for his help and support.</p>
+<p>If you haven't heard of Minesweeper - now is the right time. <a href="https://en.wikipedia.org/wiki/Microsoft_Minesweeper" target="_blank">Get acquainted</a> with the rules and play it a couple of times :)</p>
+<p>Our goal will be to make Minesweeper print flags where there are mines, right when starting up. Differently put, we would like to expose the mines on start-up by printing flags on the mined squares.</p>
+<h2>Finding the Minefield</h2>
+<p>Now let's get into the min(e)ds of the Minesweeper developers. </p>
+<p>Say we had to create a minefield - namely, some matrix, or an array of arrays - how would we determine which squares contain mines and which don't?</p>
+<p>Since this decision should yield different results with every run of the game, we can assume that some randomization function is used to generate the minefield. Let's go for <a href="http://www.cplusplus.com/reference/cstdlib/rand/" target="_blank">rand</a><a href="http://www.cplusplus.com/reference/cstdlib/rand/" target="_blank"> function</a> :)</p>
+<ol>
+<li>
+<p>Download Minesweeper from <a href="https://drive.google.com/open?id=1j6M4NsbBcaf3ztI4tMC4YyRWGz8l0Prz" target="_blank">this link</a>.</p>
+</li>
+<li>
+<p>Drag-and-drop it to IDA Pro.</p>
+</li>
+<li>
+<p>Click on the Imports tab to see the function that winmine.exe imports.</p>
+</li>
+<li>
+<p>Double-click on rand to reach the idata section, where all the addresses of imported functions can be found.</p>
+</li>
+<li>
+<p>Click on rand to highlight it and then hit 'x'. The cross-references to rand will then appear.</p>
+</li>
+<li>
+<p>Click on 'Ok' to move to the code which calls rand.</p>
+</li>
+<li>
+<p>Nice! We just found the only place where rand is called.<br/>
+Rename the function by clicking on sub_1003940, hitting 'n' and typing in a name like rand_caller.</p>
+</li>
+</ol>
+<figure><video controls style="width:100%; border-radius:4px;"><source src="videos/find_rand.mp4" type="video/mp4"></video></figure>
+<h2>Approaches</h2>
+<p>We can think of (at least) 2 different approaches to solving the problem:</p>
+<ol>
+<li>
+<p>Change the minefield.<br/>
+Suppose we have a minefield somewhere is the memory of the Minesweeper process. This minefield must contain the information regarding mine locations, right?<br/>
+If we manage to somehow change this information, so that a square with a mine will be marked with a flag - we're done.</p>
+<p>Pseudo-illustration:</p>
+<pre><code>minefield_before = [[empty, mine, ..., empty], [...], ..., [...]]
+minefield_hacked = [[empty, flag, ..., empty], [...], ..., [...]]</code></pre>
+</li>
+<li>
+<p>Change the printing function.<br/>
+As Minesweeper is a GUI application, it contains graphics and uses a function which prints those graphics to the screen.<br/>
+If we manage to find this function and pass it the argument corresponding to flag whenever there is a mine - we're done.</p>
+<p>Pseudo-illustration:</p>
+<pre><code>if minefield[i] == mine:
+    print_square(flag)
+else:
+    print_square(empty)</code></pre>
+</li>
+</ol>
+<p>We will take the first road. You may want, at a later point, to try the<br/>
+second.</p>
+<h2>Static analysis of rand_caller</h2>
+<p>Now let's figure out what rand_caller is.</p>
+<p>This function receives one argument which IDA calls arg_0.</p>
+<p>The function calls <a href="http://www.cplusplus.com/reference/cstdlib/rand/" target="_blank">rand</a> which returns a random integer in<br/>
+the EAX register.</p>
+<p>Then <a href="https://c9x.me/x86/html/file_module_x86_id_68.html" target="_blank">cdq</a> is called. This instruction converts a double-word <br/>
+into a quad-word. Namely, it expands the value in EAX<br/>
+such that this value is stored in EDX:EAX.</p>
+<p>When <a href="https://www.aldeid.com/wiki/X86-assembly/Instructions/idiv" target="_blank">idiv</a> is called, it takes the value in EDX:EAX and divides it by the function's argument (note that [esp+arg_0] is a synonym to "what is stored in the address ESP + the stack offset of arg_0").</p>
+<p>After this division, the quotient resides in EAX whereas the remainder (modulo) is in EDX. The fact that EDX is moved to EAX right before the function returns implies that the relevant value is the division remainder. </p>
+<p>To sum up, rand_caller randomizes a number and then performs a modulo, guaranteeing the result does not exceed the value in arg_0.</p>
+<figure><img alt="" src="images/c52569_48a8999f86274cf1bf96d9b5d9d74d0d~mv2_57fa7536.png"/></figure>
+<h2>Finding the calls to rand_caller</h2>
+<p>So now we know what rand_caller does. Let's find out where it is used. I remind you - our current goal is to find the place in code where the minefield is created or initialized.</p>
+<ol>
+<li>
+<p>Click on the name rand_caller to highlight it and then hit 'x' to show all cross-references. </p>
+</li>
+<li>
+<p>In the xrefs windows, it can be seen the rand_caller is called from two places in the code which are 8 bytes away from each other. Go there by double-clicking on one of the xref entries.</p>
+</li>
+</ol>
+<p>Now doesn't this look like an interesting code construct? ;)</p>
+<figure><video controls style="width:100%; border-radius:4px;"><source src="videos/find_caller.mp4" type="video/mp4"></video></figure>
+<h2>Static analysis of the loop</h2>
+<p>We start with the first block.</p>
+<p>Some value is pushed onto the stack and then rand_caller is called. The value is moved to ESI and incremented by 1.</p>
+<p>Next, another value is pushed onto the stack and rand_caller is once again called. This time, the return value is incremented by 1, moved to ECX and multiplied by 32 (recall that shl ecx, 5 ~ ecx = ecx * 2^5).</p>
+<p>We finish with:</p>
+<ul>
+<li>
+<p>0 &lt; ESI &lt; dword_1005334 + 1</p>
+</li>
+<li>
+<p>31 &lt; ECX &lt; (dword_1005338 ) * 32 + 1</p>
+</li>
+</ul>
+<p>Make sure you understand why :)</p>
+<figure><img alt="" src="images/c52569_bdc2e614cc904bc9b2720ffc05602389~mv2_95db83b7.png"/></figure>
+<p>Then, the sum of these two values is used as an offset of some memory location byte_1005340. Whatever byte is in the resulting address is tested against 0x80.</p>
+<p>Note that the lowest address we can get here (after summing up base + offset) is 0x1005340 + 31.</p>
+<p>What's the meaning of testing a value against 0x80?</p>
+<p>0x80 in hex is 0b10000000 in binary. As you can tell, the only set bit is the 8th least-significant bit (if you count bits from right to left, the eighth is the only one set).</p>
+<ul>
+<li>
+<p>Take every number with this bit set. ANDing it with 0x80 will result in the number 0x80.</p>
+</li>
+<li>
+<p>Take every number with this bit unset. ANDing it with 0x80 will result in 0x0 (zero).</p>
+</li>
+</ul>
+<p>In other words, testing against 0x80 checks whether the eighth LSB is set or not.</p>
+<p>If the resulted value is not zero (meaning, the relevant bit was set), we go back and run this same block - the one which calls rand_caller twice. Otherwise, we proceed to the next block.</p>
+<p>In this next block, we do the following:</p>
+<ol>
+<li>
+<p>We once again multiply EAX by 32 (this is redundant as it was already done with ECX. Compiler issues I guess...).</p>
+</li>
+<li>
+<p>We load into EAX the value stored in the same offset from the same memory location we referenced before. </p>
+</li>
+<li>
+<p>Then, we OR EAX with the value 0x80, which is a synonym to setting the 8th LSB in EAX.</p>
+</li>
+<li>
+<p>We decrease some loop variable (dword_1005330) by 1 and continue.</p>
+</li>
+</ol>
+<p>All in all, it looks like the following:</p>
+<p>We randomize two values and then reference a single byte in memory using the sum of these values as an offset (you can think of it as fetching an element from an array using an index). If some specific bit is set in the fetched byte - we go and randomize an offset all over again. If the bit is not set - we set it and continue with the loop.</p>
+<p>This logic smells like random positioning of mines: say the 8th LSB marks a mine.<br/>
+If we randomize a location where this bit is already set (namely, a mine is already present) - we try finding another proper location. Otherwise - if there is no mine on the square - we place one.</p>
+<p>Before we continue, make sure you enable line prefixes in IDA to view addresses:​</p>
+<p>Click on Options &gt; General &gt; Line Prefixes (graph).</p>
+<h2>Dynamic analysis to our rescue</h2>
+<p>There are some value which we cannot see in IDA because they are only assigned at run time. However, dynamic analysis (AKA 'debugging') will come out very handy in these cases.</p>
+<p>The values we are interested in are the following:</p>
+<ul>
+<li>
+<p>dword_1005334, dword_1005538 - the arguments passed to rand_caller and determine the range of randomized values.</p>
+</li>
+<li>
+<p>dword_1005340 - the base address to which the offsets (indexes) are added.</p>
+</li>
+</ul>
+<p>Knowing what these values are at run time will give us a clue on what is going on.</p>
+<ol>
+<li>
+<p>Open OllyDbg (download it <a href="http://www.ollydbg.de/" target="_blank">here</a><a href="http://www.ollydbg.de/" target="_blank">).</a></p>
+</li>
+<li>
+<p>Open winmine.exe in Olly and confirm any messages regarding permissions.</p>
+</li>
+<li>
+<p>The program will open in an address space belonging to ntdll - look at the third line of disassembly. This is not the code we're looking for. <br/>
+Hit F9 ('run') to reach the winmine.exe code.</p>
+</li>
+</ol>
+<figure><img alt="" src="images/c52569_38c6214aa01f4fa391acd236fce9ab48~mv2_b9e01245.png"/></figure>
+<p>Let's find out which values are passed as parameters to rand_caller:</p>
+<ol>
+<li>
+<p>Scroll (up) the disassembly window until you reach address 0x10036C7 where the first push instruction is (take a look at IDA to recall the code in this address).</p>
+</li>
+<li>
+<p>Hit F2 to put a breakpoint (bp).</p>
+</li>
+<li>
+<p>Hit F9 to run winmine.exe until the breakpoint we just placed is hit.</p>
+</li>
+<li>
+<p>Now hit F8 to step over the current push instruction. Take a look at the uppermost value in the stack window. What is this value? I see a 9.</p>
+</li>
+<li>
+<p>The call which follows the push is the call to rand_caller. As we stated before, the function is supposed to put in EAX a random number which is no greater than the argument (in my case - 9). Press F8 and verify this expectation.</p>
+</li>
+<li>
+<p>Keep hitting F8 until you reach the second push. What value is pushed onto the stack this time? I still get a 9 :)</p>
+</li>
+</ol>
+<p>Does 9 remind us of something?</p>
+<p>Now, let's see how a mine is placed (if our assumption is correct and this code indeed places mines to the board):</p>
+<ol>
+<li>
+<p>Reach (with F8s) the instruction at address 0x10036E6. This is where we check if the 8th LSB is set or not.</p>
+</li>
+<li>
+<p>Right below the disassembly window, you can find the address that is to be checked in memory. Also, you can see the value stored in this address - 0F.</p>
+</li>
+<li>
+<p>The test instruction should result in a zero, since 0x0F &amp; 0x80 = 0.<br/>
+According to our theory - we met an empty square with no mine in it.</p>
+</li>
+<li>
+<p>Hit F8 until reaching the or instruction. Look once again at the calculated address below the assembly code.</p>
+</li>
+<li>
+<p>Navigate to this address in the memory window. </p>
+</li>
+<li>
+<p>Hit F8 and watch this memory location change to 8F.</p>
+</li>
+</ol>
+<p>We just saw our loop in action: we randomized a memory location (in some limited range) and read the byte stored in this location. We checked if a certain bit in this byte was set. Since it wasn't - we set it so that the value changed from 0F to 8F.</p>
+<h2>Understanding the data in memory</h2>
+<p>It is a good time to strengthen our theory that the base address - 0x1005340 - is indeed the address of our minefield. I call it the base address because this is the address to which we add the random offset. As said before, it can also be thought of as the address of an array whose elements we read using a random index.</p>
+<p>Find 0x1005340 in the memory window. This is what I see:​</p>
+<figure><img alt="" src="images/c52569_c2ac2cba4d174a2b9a45e5b880d8d249~mv2_ca7d4c03.png"/></figure>
+<p>This looks like many arbitrary bytes, doesn't it? Let's try to dive into them.</p>
+<p>I see:</p>
+<ul>
+<li>
+<p>a sequence of 11 times 10​ followed by 21 times 0F (32 bytes in total).</p>
+</li>
+<li>
+<p>9 repeating chunks, each is 32 bytes and consists of:</p>
+<ul>
+<li>
+<p>​a single 10​</p>
+</li>
+<li>
+<p>a sequence of 9 times 0F</p>
+</li>
+<li>another single 10​​</li>
+<li>a sequence of 21 times 0F</li>
+</ul>
+</li>
+</ul>
+<p>Given that by default, Minesweeper uses a 9x9 board - these 9 repeating chunks perhaps serve as the board rows: The 10s are row delimiters (they mark the beginning and end of a row) and the 9 0Fs are actually 9 squares. </p>
+<p>The assumption that these are rows is also supported by the fact that the minimal index we can get (ESI+ECX) is 33 (scroll up to recall the range of possible values). Add up the base address 0x1005340 and 33 (0x21) and you get the address 0x1005361 which is, according to our theory in the previous paragraph, the first square of the board.</p>
+<p>So now we are a bit (haha) more certain that this is the minefield. Also, we know that:</p>
+<ul>
+<li>
+<p>0F is an empty square</p>
+</li>
+<li>
+<p>8F is a mine</p>
+</li>
+</ul>
+<p>But hey... we want to draw a flag, right? What's a flag's value?</p>
+<h2>Finding a flag's value with memory breakpoints</h2>
+<p>We know where the minefield is located in memory. We know how to map a square in the GUI to a memory address. We also know that right-clicking on a square will put a flag on it. </p>
+<p>We will now use this information to understand what's the value which represents a flag.</p>
+<ol>
+<li>
+<p>Remove any previous breakpoints by highlighting the red line-of-code and hitting F2.</p>
+</li>
+<li>
+<p>Run the process by clicking on F9.</p>
+</li>
+<li>
+<p>Choose a square on the board, for example the upper-left corner.</p>
+</li>
+<li>
+<p>Calculate its location in memory (in our case, the square corresponds to 0x1005361 as we calculated before).</p>
+</li>
+<li>
+<p>Right-click on this address in the memory window and choose breakpoint &gt; memory, on write. Now whenever a value is written to this location - the program will stop right before executing this write.</p>
+</li>
+<li>
+<p>Right-click on your chosen square to put a flag on it. The program should stop at the following instruction: MOV BYTE PTR DS:[EAX], DL</p>
+</li>
+<li>
+<p>Step over (F8) this instruction and take another look at your address. What is its value now with the flag?<br/>
+ </p>
+</li>
+</ol>
+<figure><video controls style="width:100%; border-radius:4px;"><source src="videos/memory_breakpoint.mp4" type="video/mp4"></video></figure>
+<h2>Bits arithmetic</h2>
+<p>The value which corresponds to a square with a flag is 0x0E. However, recall that a square with a mine is marked as such by its 8th LSB. Taking 0x0E and setting this bit will result in the value 0x8F - which is what we aim for.</p>
+<p>Remember how we placed a mine by ORing a 0x0F byte with 0x80? This resulted in the value 0x8F.</p>
+<p>Now we need to make sure that this 0x0F turns into a 0x8E instead! </p>
+<p>How do we do that? We need some bitwise operations...</p>
+<p>Before: 0x0F to 0x8F, or 0b00001111 to 0b10001111.</p>
+<p>After:    0x0F to 0x8E, or 0x00001111 to 0b10001110.</p>
+<p>So basically we need to do two things:</p>
+<ol>
+<li>
+<p>Set the 8th LSB</p>
+</li>
+<li>
+<p>Unset the 1st LSB</p>
+</li>
+</ol>
+<p>I tend to go with XOR here, look:</p>
+<p>0x0F XOR 0x81 == 0b00001111 XOR 0b10000001 == 10001110 == 0x8E :)))))</p>
+<h2>Now patch!</h2>
+<p>The only thing that's left is to actually modify the program, or more specifically, the machine code it runs.</p>
+<p>We have already come to the conclusion that we need to change a certain OR instruction to be a XOR instruction (with a slightly different operand). Let's do just that:</p>
+<ol>
+<li>
+<p>Find in OllyDbg the address 0x10036FA where the OR instruction is executed and click on it. Remember? This OR is responsible for placing a mine.</p>
+</li>
+<li>
+<p>Hit the space-bar while the line is highlighted. A popup titled "Assemble at 010036FA" will appear.</p>
+</li>
+<li>
+<p>Type in XOR instead of OR, and 81 instead of 80.</p>
+</li>
+<li>
+<p>Click on "Assemble" and then hit Esc or choose "Cancel".</p>
+</li>
+<li>
+<p>Right-click on the disassembly window and choose "Copy to executable" &gt; "All modifications".</p>
+</li>
+<li>
+<p>Click on "Copy all".</p>
+</li>
+<li>
+<p>Right-click again, choose "Save file" and specify both location and name to the newly patched file.</p>
+</li>
+<li>
+<p>Open the file from its location.</p>
+</li>
+</ol>
+<figure><video controls style="width:100%; border-radius:4px;"><source src="videos/patching.mp4" type="video/mp4"></video></figure>
+<p>BRAVO you little hacker! </p>
+<p>You have completed the Reverse Engineering for Beginners workshop! </p>
+<p>You should be truly very proud! :)</p>
+<p><a href="index.html">GO BACK HOME</a></p>
+</main>
+</div></body>
+</html>
