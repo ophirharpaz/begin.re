@@ -150,6 +150,9 @@
   <a href="mailto:ophirharpaz@gmail.com" aria-label="Email">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
   </a>
+  <a aria-label="Buy me a coffee" href="https://ko-fi.com/ophirharpaz" target="_blank">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"></path></svg>
+</a>
 </footer>
 <div class="page-content">
 <section class="hero">
@@ -160,9 +163,27 @@
       <a href="the-workshop.html" class="btn btn-primary">Get Started</a>
       <a href="about.html" class="btn btn-secondary">About</a>
     </div>
+    <div class="coffee-callout">
+      ☕ Building this resource took me time and effort. If you found it useful, <a href="https://ko-fi.com/ophirharpaz" target="_blank">buying me a coffee</a> is a simple way to show your appreciation and say thank you!
+    </div>
   </div>
 </section>
 </div>
 
+<script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+<script>
+kofiWidgetOverlay.draw('ophirharpaz', {
+  'type': 'floating-chat',
+  'floating-chat.donateButton.text': 'Buy me a coffee',
+  'floating-chat.donateButton.background-color': '#a855f7',
+  'floating-chat.donateButton.text-color': '#fff'
+});
+// shrink button text once the widget injects into the DOM
+var _kofiObserver = new MutationObserver(function() {
+  var el = document.querySelector('[id^="kofi-widget"] span, .kofiFloatingChatButton span, [class*="kofi"] span');
+  if (el) { el.style.fontSize = '0.75rem'; _kofiObserver.disconnect(); }
+});
+_kofiObserver.observe(document.body, { childList: true, subtree: true });
+</script>
 </body>
 </html>
