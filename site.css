@@ -43,8 +43,11 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
   z-index: 100;
 }
+
+
 
 .sidebar-brand {
   padding: 1.5rem 1.25rem 1rem;
@@ -141,6 +144,7 @@ body {
 .nav-section-label:not(:first-child) {
   margin-top: 0.4rem;
 }
+
 
 /* Page layout */
 .page-content {
@@ -402,3 +406,4 @@ img { max-width: 100%; height: auto; }
 }
 
 .coffee-callout a { color: var(--accent); }
+

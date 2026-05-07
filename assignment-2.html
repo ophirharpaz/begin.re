@@ -45,10 +45,26 @@
 <a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
 </a>
-<a aria-label="Buy me a coffee" href="https://ko-fi.com/ophirharpaz" target="_blank">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"></path></svg>
-</a>
 </footer>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('ophirharpaz', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Say thanks',
+    'floating-chat.donateButton.background-color': '#794bc4',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+  function openKofi(e) {
+    e.preventDefault();
+    var known = ['sidebar', 'site-footer', 'page-content'];
+    var kofi = Array.from(document.body.children).find(function(el) {
+      return el.tagName !== 'SCRIPT' &&
+             !known.some(function(cls) { return el.classList.contains(cls); });
+    });
+    if (kofi) { (kofi.querySelector('button') || kofi).click(); return; }
+    window.open('https://ko-fi.com/ophirharpaz', '_blank');
+  }
+</script>
 <div class="page-content">
 <main class="email-card">
 <h2>[Reverse Engineering Workshop] Prep #2 - The Call Stack &amp; OllyDbg</h2>
@@ -97,13 +113,13 @@
 <p>The next two paragraphs might be very confusing. If necessary, read them again and again, use a pen and a paper, repeat until you feel comfortable with the presented information. It's important :)</p>
 <p>Recall: ESP is the Stack Pointer - it always points to the top of the stack. </p>
 <p>When values are pushed onto the stack - it decreases. When values are popped off the stack - it increases. </p>
-<p>Therfore, this register tends to change frequently.</p>
+<p>Therefore, this register tends to change frequently.</p>
 <p>During a function’s execution, we need a way to access the function data - its parameters and local variables. Due to the dynamic nature of ESP - we can’t use it as an anchor. Instead, we take the value of ESP at the moment when the function is called and we put it in EBP - the Base Pointer. During the function execution, EBP will stay fixed (unlike ESP). Thus, EBP can be used as an anchor to access parameters and variables.</p>
 <p>Note that when moving ESP’s value into EBP, we override the value already stored in EBP. For this reason, we need to preserve EBP’s previous value somehow - this is done by pushing EBP onto the stack right before it receives its new value.</p>
 <p>Imagine DrawSquare calls DrawLine. DrawSquare’s stack frame will appear first (in higher addresses) on the stack.</p>
 <ol>
 <li>
-<p>When DrawLine is called, the current EBP (Base Pointer of DrawSqaure) will be pushed onto the stack.</p>
+<p>When DrawLine is called, the current EBP (Base Pointer of DrawSquare) will be pushed onto the stack.</p>
 </li>
 <li>
 <p>EBP will then be assigned the current value of ESP. From now on, EBP is used as DrawLine’s base pointer to access its variables and parameters.</p>
@@ -112,7 +128,7 @@
 <p>Throughout DrawLine, ESP might change many times, but EBP is fixed.</p>
 </li>
 <li>
-<p>When DrawLine terminates, ESP will be be set to the value of EBP. This sets the pointer to the top of the stack to be equal to the base pointer, and practically frees the memory allocated on the stack for the local variables.</p>
+<p>When DrawLine terminates, ESP will be set to the value of EBP. This sets the pointer to the top of the stack to be equal to the base pointer, and practically frees the memory allocated on the stack for the local variables.</p>
 </li>
 <li>
 <p>DrawSquare’s EBP will be popped from the stack. From now on, EBP can be used again as DrawSquare’s base pointer.</p>
@@ -186,5 +202,6 @@
 <p>Have fun!</p>
 <p><a class="btn btn-primary" href="assignment-3.html">To prep #3!</a></p>
 </main>
-</div></body>
+</div>
+</body>
 </html>

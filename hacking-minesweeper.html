@@ -45,17 +45,33 @@
 <a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
 </a>
-<a aria-label="Buy me a coffee" href="https://ko-fi.com/ophirharpaz" target="_blank">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"></path></svg>
-</a>
 </footer>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('ophirharpaz', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Say thanks',
+    'floating-chat.donateButton.background-color': '#794bc4',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+  function openKofi(e) {
+    e.preventDefault();
+    var known = ['sidebar', 'site-footer', 'page-content'];
+    var kofi = Array.from(document.body.children).find(function(el) {
+      return el.tagName !== 'SCRIPT' &&
+             !known.some(function(cls) { return el.classList.contains(cls); });
+    });
+    if (kofi) { (kofi.querySelector('button') || kofi).click(); return; }
+    window.open('https://ko-fi.com/ophirharpaz', '_blank');
+  }
+</script>
 <div class="page-content">
 <main>
 <h2>Session #5 - Hacking Minesweeper</h2>
 <p>The last part is a guided session to hacking Microsoft's famous Minesweeper game. You are welcome to check my <a href="https://medium.com/@ophirharpaz/put-the-flags-out-hacking-minesweeper-befff233edc1" target="_blank">blog-post</a> where I told the story of solving this challenge. Also, you can download the patched version <a href="https://github.com/ophirharpaz/Patched-Minesweeper" target="_blank">here</a>.</p>
 <p>I would like to give all the credit for this exercise to <a href="https://www.linkedin.com/in/aviad-carmel-2a2b6394/" target="_blank">Aviad Carmel</a> and thank him a lot for his help and support.</p>
 <p>If you haven't heard of Minesweeper - now is the right time. <a href="https://en.wikipedia.org/wiki/Microsoft_Minesweeper" target="_blank">Get acquainted</a> with the rules and play it a couple of times :)</p>
-<p>Our goal will be to make Minesweeper print flags where there are mines, right when starting up. Differently put, we would like to expose the mines on start-up by printing flags on the mined squares.</p>
+<p>Our goal will be to make Minesweeper print flags where there are mines, right when starting up. Differently put, we would like to expose the mines on startup by printing flags on the mined squares.</p>
 <h2>Finding the Minefield</h2>
 <p>Now let's get into the min(e)ds of the Minesweeper developers. </p>
 <p>Say we had to create a minefield - namely, some matrix, or an array of arrays - how would we determine which squares contain mines and which don't?</p>
@@ -65,7 +81,7 @@
 <p>Download Minesweeper from <a href="https://drive.google.com/open?id=1j6M4NsbBcaf3ztI4tMC4YyRWGz8l0Prz" target="_blank">this link</a>.</p>
 </li>
 <li>
-<p>Drag-and-drop it to IDA Pro.</p>
+<p>Drag-and-drop it into IDA Pro.</p>
 </li>
 <li>
 <p>Click on the Imports tab to see the function that winmine.exe imports.</p>
@@ -90,7 +106,7 @@ Rename the function by clicking on sub_1003940, hitting 'n' and typing in a na
 <ol>
 <li>
 <p>Change the minefield.<br/>
-Suppose we have a minefield somewhere is the memory of the Minesweeper process. This minefield must contain the information regarding mine locations, right?<br/>
+Suppose we have a minefield somewhere in the memory of the Minesweeper process. This minefield must contain the information regarding mine locations, right?<br/>
 If we manage to somehow change this information, so that a square with a mine will be marked with a flag - we're done.</p>
 <p>Pseudo-illustration:</p>
 <pre><code>minefield_before = [[empty, mine, ..., empty], [...], ..., [...]]
@@ -128,7 +144,7 @@ such that this value is stored in EDX:EAX.</p>
 <p>Click on the name rand_caller to highlight it and then hit 'x' to show all cross-references. </p>
 </li>
 <li>
-<p>In the xrefs windows, it can be seen the rand_caller is called from two places in the code which are 8 bytes away from each other. Go there by double-clicking on one of the xref entries.</p>
+<p>In the xrefs window, it can be seen the rand_caller is called from two places in the code which are 8 bytes away from each other. Go there by double-clicking on one of the xref entries.</p>
 </li>
 </ol>
 <p>Now doesn't this look like an interesting code construct? ;)</p>
@@ -184,11 +200,11 @@ If we randomize a location where this bit is already set (namely, a mine is alre
 <p>Before we continue, make sure you enable line prefixes in IDA to view addresses:​</p>
 <p>Click on Options &gt; General &gt; Line Prefixes (graph).</p>
 <h2>Dynamic analysis to our rescue</h2>
-<p>There are some value which we cannot see in IDA because they are only assigned at run time. However, dynamic analysis (AKA 'debugging') will come out very handy in these cases.</p>
+<p>There are some values which we cannot see in IDA because they are only assigned at run time. However, dynamic analysis (AKA 'debugging') will come out very handy in these cases.</p>
 <p>The values we are interested in are the following:</p>
 <ul>
 <li>
-<p>dword_1005334, dword_1005538 - the arguments passed to rand_caller and determine the range of randomized values.</p>
+<p>dword_1005334, dword_1005338 - the arguments passed to rand_caller and determine the range of randomized values.</p>
 </li>
 <li>
 <p>dword_1005340 - the base address to which the offsets (indexes) are added.</p>
@@ -323,7 +339,7 @@ According to our theory - we met an empty square with no mine in it.</p>
 <p>Now we need to make sure that this 0x0F turns into a 0x8E instead! </p>
 <p>How do we do that? We need some bitwise operations...</p>
 <p>Before: 0x0F to 0x8F, or 0b00001111 to 0b10001111.</p>
-<p>After:    0x0F to 0x8E, or 0x00001111 to 0b10001110.</p>
+<p>After:    0x0F to 0x8E, or 0b00001111 to 0b10001110.</p>
 <p>So basically we need to do two things:</p>
 <ol>
 <li>
@@ -334,7 +350,7 @@ According to our theory - we met an empty square with no mine in it.</p>
 </li>
 </ol>
 <p>I tend to go with XOR here, look:</p>
-<p>0x0F XOR 0x81 == 0b00001111 XOR 0b10000001 == 10001110 == 0x8E :)))))</p>
+<p>0x0F XOR 0x81 == 0b00001111 XOR 0b10000001 == 0b10001110 == 0x8E :)))))</p>
 <h2>Now patch!</h2>
 <p>The only thing that's left is to actually modify the program, or more specifically, the machine code it runs.</p>
 <p>We have already come to the conclusion that we need to change a certain OR instruction to be a XOR instruction (with a slightly different operand). Let's do just that:</p>
@@ -372,5 +388,7 @@ According to our theory - we met an empty square with no mine in it.</p>
 ☕ If you got this far and enjoyed the workshop, consider <a href="https://ko-fi.com/ophirharpaz" target="_blank">buying me a coffee</a> — it's a simple way to show your appreciation and keep resources like this coming!
 </div>
 </main>
-</div></body>
+</div>
+
+</body>
 </html>

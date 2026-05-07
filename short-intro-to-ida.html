@@ -45,19 +45,36 @@
 <a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
 </a>
-<a aria-label="Buy me a coffee" href="https://ko-fi.com/ophirharpaz" target="_blank">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"></path></svg>
-</a>
 </footer>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('ophirharpaz', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Say thanks',
+    'floating-chat.donateButton.background-color': '#794bc4',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+  function openKofi(e) {
+    e.preventDefault();
+    var known = ['sidebar', 'site-footer', 'page-content'];
+    var kofi = Array.from(document.body.children).find(function(el) {
+      return el.tagName !== 'SCRIPT' &&
+             !known.some(function(cls) { return el.classList.contains(cls); });
+    });
+    if (kofi) { (kofi.querySelector('button') || kofi).click(); return; }
+    window.open('https://ko-fi.com/ophirharpaz', '_blank');
+  }
+</script>
 <div class="page-content">
 <main>
 <h2>Session #2 - Short Intro to IDA</h2>
-<p>This slideshow contains a short introduction to the IDA disassembler along with some tips and tricks. Follow the slides with your IDA open.</p>
+<p>This slideshow contains a short introduction to the IDA disassembler along with some tips and tricks. Follow the slides with IDA open.</p>
 <div class="video-embed">
 <iframe allowfullscreen="true" frameborder="0" mozallowfullscreen="true" src="https://docs.google.com/presentation/d/1Dl0fQJC-uikm5BHBenaiCFVc8P0-nfSA4A1Qg3xRlbE/embed?start=false&amp;loop=false&amp;delayms=3000" webkitallowfullscreen="true"></iframe>
 </div>
 <p style="font-size:0.85rem; margin-top:-0.5rem;"><a href="https://docs.google.com/presentation/d/1Dl0fQJC-uikm5BHBenaiCFVc8P0-nfSA4A1Qg3xRlbE/" target="_blank">Open in Google Slides</a> for zoom &amp; fullscreen.</p>
 <p><a class="btn btn-primary" href="playground-exercises.html">Next session</a></p>
 </main>
-</div></body>
+</div>
+</body>
 </html>

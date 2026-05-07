@@ -45,10 +45,26 @@
 <a aria-label="Email" href="mailto:ophirharpaz@gmail.com">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></svg>
 </a>
-<a aria-label="Buy me a coffee" href="https://ko-fi.com/ophirharpaz" target="_blank">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"></path></svg>
-</a>
 </footer>
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('ophirharpaz', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Say thanks',
+    'floating-chat.donateButton.background-color': '#794bc4',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+  function openKofi(e) {
+    e.preventDefault();
+    var known = ['sidebar', 'site-footer', 'page-content'];
+    var kofi = Array.from(document.body.children).find(function(el) {
+      return el.tagName !== 'SCRIPT' &&
+             !known.some(function(cls) { return el.classList.contains(cls); });
+    });
+    if (kofi) { (kofi.querySelector('button') || kofi).click(); return; }
+    window.open('https://ko-fi.com/ophirharpaz', '_blank');
+  }
+</script>
 <div class="page-content">
 <main class="email-card">
 <h2>[Reverse Engineering Workshop] Prep #3 - Last Prep!</h2>
@@ -112,14 +128,14 @@ string = (char*)malloc(length); // allocate memory dynamically on the heap
 if (string) printf("malloc succeeded\n"); // check for errors</code></pre>
 <p>Note that every piece of allocated memory should be freed when not used anymore. Otherwise, the memory on the heap, a finite resource, might run out. The function is named free and it receives a pointer to the allocated memory space −</p>
 <pre><code>free(string);</code></pre>
-<h3>Your rirst step in RE</h3>
+<h3>Your first step in RE</h3>
 <p>The input to IDA is an executable file - anything which is supposed to run on a CPU: just drag-and-drop (not right now, we’ll do this in a minute) an .exe file into IDA and it will be disassembled.</p>
 <p>Depending on the compiler / IDA version used, IDA may or may not correctly identify the main function. Sometimes, we will open an executable file with IDA and the main function will appear immediately, and sometimes we will have to search for it.</p>
 <p>How do we find the main function?</p>
 <p>Well, different compilers generate different code and will also call main() in different ways. We will focus on one way (among many) to locate main() which is relevant specifically to the programs compiled for the workshop.</p>
 <p>Let’s think about what defines a function: its name, its return value and its parameters. However, function names are not always available in IDA (it depends on several things like whether the function is imported from a library, or if a symbol file is present, etc.), and the type of return value is also unknown - a function’s return value will always be seen as a number stored in EAX.</p>
 <p>Our last chance is the function’s parameters: before calling a function with X arguments, we expect to see X separate push instructions (one for every argument) and then a call instruction with the function address. We can also expect IDA to identify Windows runtime functions that are responsible for loading the program and calling its main function - these functions may help us locate main() as well.</p>
-<p>Let’s try to put this into test with the executable provided here:</p>
+<p>Let’s try to put this to the test with the executable provided here:</p>
 <ol>
 <li>
 <p>Download <a href="https://drive.google.com/file/d/1z7jfXijfYAZQQ1Ldo4O2rZj8iX7Hp79L/view?usp=sharing" target="_blank">this archive file</a> to your computer and extract it (password is CLEAN).</p>
@@ -198,5 +214,6 @@ printf("%d %c %s %d %c", *ptr, c, mid, num, *ptr2);</code></pre>
 <p>See you in the workshop :)</p>
 <p><a class="btn btn-primary" href="x86-overview.html">To the workshop!</a></p>
 </main>
-</div></body>
+</div>
+</body>
 </html>
