@@ -16,7 +16,7 @@
 html {
   background:
     linear-gradient(rgba(5, 0, 15, 0.72), rgba(5, 0, 15, 0.72)),
-    url('images/hero-bg.jpg') center / cover fixed;
+    url('images/hero-bg.webp') center / cover fixed;
   scrollbar-gutter: stable;
 }
 
@@ -386,3 +386,19 @@ figure img {
 }
 
 img { max-width: 100%; height: auto; }
+
+/* Coffee callout */
+.coffee-callout {
+  margin-top: 2rem;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  background: rgba(45, 16, 72, 0.6);
+  text-align: left;
+  font-size: 0.9rem;
+  color: #8b949e;
+  line-height: 1.6;
+}
+
+.coffee-callout a { color: var(--accent); }
